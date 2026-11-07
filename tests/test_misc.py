@@ -36,3 +36,24 @@ def test_pdf_export(db, app, tmp_path):
     out = tmp_path / "r.pdf"
     export_pdf(db, str(out), {"breathing": "Дыхание"})
     assert out.read_bytes()[:4] == b"%PDF" and out.stat().st_size > 2000
+
+
+def test_translations_complete():
+    import sys
+
+    sys.path.insert(0, str(ROOT / "tools"))
+    import i18n
+
+    strings = i18n.extract()
+    for lang in i18n.LANGS:
+        tr = i18n.load(ROOT / "mv" / "i18n" / f"{lang}.ts")
+        for ctx, sources in strings.items():
+            for src in sources:
+                assert (ctx, src) in tr, (lang, ctx, src)
+        assert (ROOT / "mv" / "i18n" / f"{lang}.qm").exists()
+
+
+def test_voice_files():
+    for lang in ("ru", "en", "zh"):
+        for key in PHRASES:
+            assert (ROOT / "mv" / "data" / "voice" / lang / f"{key}.ogg").exists(), (lang, key)

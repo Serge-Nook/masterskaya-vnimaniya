@@ -30,7 +30,7 @@ def detect_language() -> str:
         value = os.environ.get(var, "")
         if value:
             code = value[:2].lower()
-            return code if code in LANGUAGES else "en"
+            return code if code in LANGUAGES else "ru"
     try:
         code = (locale.getlocale()[0] or "ru")[:2].lower()
     except ValueError:

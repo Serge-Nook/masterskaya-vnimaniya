@@ -370,7 +370,7 @@ class AdultScreen(Screen):
             "<p>" + tr("Вспомогательный тренажёр внимания, сдержанности и саморегуляции для детей 6–7 лет."
                        " Не заменяет консультацию специалиста.") + "</p>"
             "<p>" + tr("Работает без интернета. Не собирает и не передаёт данные.") + "</p>"
-            "<p>" + tr("Шрифт Nunito — SIL Open Font License. Голос — Piper TTS.") + "</p>"
+            "<p>" + tr("Шрифты Nunito и Noto Sans SC — SIL Open Font License. Голос — Piper TTS.") + "</p>"
         )
         text.setWordWrap(True)
         lay.addWidget(text)

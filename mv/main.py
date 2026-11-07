@@ -8,7 +8,7 @@ from logging.handlers import RotatingFileHandler
 from types import SimpleNamespace
 
 from PySide6.QtCore import QEvent, QPoint, QPointF, Qt, QTimer
-from PySide6.QtGui import QFontDatabase, QGuiApplication, QIcon, QKeyEvent, QMouseEvent
+from PySide6.QtGui import QFont, QFontDatabase, QGuiApplication, QIcon, QKeyEvent, QMouseEvent
 from PySide6.QtWidgets import QAbstractButton, QApplication, QMainWindow, QStackedWidget, QWidget
 
 from mv import APP_ID, APP_NAME, __version__, theme
@@ -334,6 +334,7 @@ def main(argv: list[str] | None = None) -> int:
         app.setWindowIcon(QIcon(str(icon)))
     for font in (DATA / "fonts").glob("*.ttf"):
         QFontDatabase.addApplicationFont(str(font))
+    QFont.insertSubstitution("Nunito", "Noto Sans SC")
     app.setStyleSheet(theme.STYLESHEET)
 
     db = Database(user_data_dir() / "data.sqlite3")

@@ -29,7 +29,7 @@ RAINBOW = [RED, ORANGE, YELLOW, GREEN, QColor("#5BB5D9"), BLUE, PURPLE]
 MIN_TOUCH = 64
 
 STYLESHEET = """
-QWidget { color: #23343B; font-family: "Nunito", "Noto Sans", "Noto Sans CJK SC", sans-serif; font-size: 20px; }
+QWidget { color: #23343B; font-family: "Nunito", "Noto Sans SC", "Noto Sans CJK SC", sans-serif; font-size: 20px; }
 QMainWindow, #Root { background: #EAF3EF; }
 QLabel#Title { font-size: 40px; font-weight: 800; }
 QLabel#Subtitle { font-size: 26px; font-weight: 600; color: #4F6169; }
