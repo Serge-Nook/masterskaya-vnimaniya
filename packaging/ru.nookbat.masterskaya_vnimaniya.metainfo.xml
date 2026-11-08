@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>ru.nookbat.masterskaya_vnimaniya</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Мастерская внимания</name>
+  <name xml:lang="en">Attention Workshop</name>
+  <name xml:lang="zh">注意力工作坊</name>
+  <summary>Игры на внимание, усидчивость и спокойствие для детей 6–7 лет</summary>
+  <summary xml:lang="en">Games for attention, patience and calm for children aged 6–7</summary>
+  <summary xml:lang="zh">面向6–7岁儿童的注意力、耐心和平静小游戏</summary>
+  <developer id="ru.nookbat">
+    <name>Горшков Сергей Владимирович</name>
+  </developer>
+  <description>
+    <p>Вспомогательный тренажёр для детей 6–7 лет с синдромом дефицита внимания и гиперактивности. Короткие занятия
+      с енотом Тихоном тренируют внимание, сдержанность, слуховую последовательность и саморегуляцию.</p>
+    <p>Работает без интернета, не собирает и не передаёт данные. Не заменяет консультацию специалиста.</p>
+    <p xml:lang="en">A supporting trainer for children aged 6–7 with ADHD. Short sessions with Tikhon the raccoon train
+      attention, impulse control, auditory sequencing and self-regulation.</p>
+    <p xml:lang="en">Works offline and does not collect or send any data. Does not replace a specialist's advice.</p>
+  </description>
+  <launchable type="desktop-id">masterskaya-vnimaniya.desktop</launchable>
+  <url type="homepage">https://nookbat.ru</url>
+  <url type="vcs-browser">https://github.com/Serge-Nook/masterskaya-vnimaniya</url>
+  <content_rating type="oars-1.1"/>
+  <categories>
+    <category>Education</category>
+    <category>Game</category>
+  </categories>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+    <control>gamepad</control>
+  </supports>
+  <releases>
+    <release version="1.0.0" date="2026-11-07"/>
+  </releases>
+</component>

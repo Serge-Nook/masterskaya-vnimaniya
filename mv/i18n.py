@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import locale
 import os
 
 from PySide6.QtCore import QCoreApplication, QLibraryInfo, QLocale, QTranslator
@@ -29,12 +28,13 @@ def detect_language() -> str:
     for var in ("LC_ALL", "LC_MESSAGES", "LANG"):
         value = os.environ.get(var, "")
         if value:
-            code = value[:2].lower()
-            return code if code in LANGUAGES else "ru"
-    try:
-        code = (locale.getlocale()[0] or "ru")[:2].lower()
-    except ValueError:
-        code = "ru"
+            return _supported(value)
+    return _supported(QLocale.system().name())
+
+
+def _supported(name: str) -> str:
+    """Язык по имени локали; «C»/«POSIX» и неизвестные — русский (основной язык программы)."""
+    code = name[:2].lower()
     return code if code in LANGUAGES else "ru"
 
 

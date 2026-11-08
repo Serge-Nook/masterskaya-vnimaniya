@@ -57,3 +57,18 @@ def test_voice_files():
     for lang in ("ru", "en", "zh"):
         for key in PHRASES:
             assert (ROOT / "mv" / "data" / "voice" / lang / f"{key}.ogg").exists(), (lang, key)
+
+
+def test_detect_language(monkeypatch):
+    from mv.i18n import detect_language
+
+    for var in ("LC_ALL", "LC_MESSAGES", "LANG"):
+        monkeypatch.delenv(var, raising=False)
+    monkeypatch.setenv("LANG", "en_US.UTF-8")
+    assert detect_language() == "en"
+    monkeypatch.setenv("LANG", "zh_CN.UTF-8")
+    assert detect_language() == "zh"
+    monkeypatch.setenv("LANG", "C.UTF-8")
+    assert detect_language() == "ru"
+    monkeypatch.setenv("LANG", "de_DE.UTF-8")
+    assert detect_language() == "ru"
