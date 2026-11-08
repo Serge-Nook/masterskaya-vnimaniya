@@ -36,6 +36,17 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
+      - name: Fetch appimagetool and runtime
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p .cache
+          for i in 1 2 3 4 5; do
+            gh release download continuous -R AppImage/appimagetool -p "appimagetool-${{ matrix.arch }}.AppImage" -D .cache --clobber &&
+            gh release download continuous -R AppImage/type2-runtime -p "runtime-${{ matrix.arch }}" -D .cache --clobber && break
+            sleep 10
+          done
+          chmod +x .cache/appimagetool-*.AppImage
       - run: packaging/build.sh
       - uses: actions/upload-artifact@v4
         with:
