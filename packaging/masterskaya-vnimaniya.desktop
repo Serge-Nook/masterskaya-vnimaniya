@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=Application
+Name=Мастерская внимания
+Name[en]=Attention Workshop
+Name[zh]=注意力工作坊
+GenericName=Тренажёр внимания для детей
+GenericName[en]=Attention trainer for kids
+GenericName[zh]=儿童注意力训练
+Comment=Игры на внимание, усидчивость и спокойствие для детей 6–7 лет
+Comment[en]=Games for attention, patience and calm for children aged 6–7
+Comment[zh]=面向6–7岁儿童的注意力、耐心和平静小游戏
+Exec=masterskaya-vnimaniya
+Icon=masterskaya-vnimaniya
+Terminal=false
+Categories=Education;Game;KidsGame;
+Keywords=attention;adhd;kids;внимание;сдвг;дети;
+StartupWMClass=masterskaya-vnimaniya
