@@ -1,6 +1,6 @@
 APP_ID = "masterskaya-vnimaniya"
 APP_NAME = "Мастерская внимания"
 APP_NAME_EN = "Attention Workshop"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 AUTHOR = "Горшков Сергей Владимирович"
 AUTHOR_SITE = "https://nookbat.ru"

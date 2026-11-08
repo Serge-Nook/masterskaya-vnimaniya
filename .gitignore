@@ -6,3 +6,4 @@ dist/
 *.AppImage
 *.deb
 .pytest_cache/
+.cache/

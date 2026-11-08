@@ -420,6 +420,10 @@
       <translation>Tikhon's voice</translation>
     </message>
     <message>
+      <source>Проверить звук</source>
+      <translation>Test sound</translation>
+    </message>
+    <message>
       <source>Спокойная музыка</source>
       <translation>Calm music</translation>
     </message>

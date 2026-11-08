@@ -43,13 +43,23 @@ class Audio(QObject):
         self._fallback.timeout.connect(self._next)
         self._effects: dict[str, object] = {}
         self.player = self.music = None
-        if HAVE_MULTIMEDIA:
+        self.sdl = None
+        self._poll = QTimer(self)
+        self._poll.setInterval(40)
+        self._poll.timeout.connect(self._poll_voice)
+        try:
+            from mv.audio_sdl import SdlMixer  # noqa: PLC0415
+
+            self.sdl = SdlMixer()
+        except Exception as exc:  # pragma: no cover - зависит от системы
+            log.info("audio: SDL unavailable (%s), using Qt Multimedia", exc)
+        if self.sdl is None and HAVE_MULTIMEDIA:
             try:
                 self.out = QAudioOutput(self)
                 self.player = QMediaPlayer(self)
                 self.player.setAudioOutput(self.out)
                 self.player.mediaStatusChanged.connect(self._status)
-                self.player.errorOccurred.connect(lambda *_: self._fallback.start(300))
+                self.player.errorOccurred.connect(self._error)
                 self.music_out = QAudioOutput(self)
                 self.music = QMediaPlayer(self)
                 self.music.setAudioOutput(self.music_out)
@@ -73,6 +83,8 @@ class Audio(QObject):
 
     def apply_volume(self) -> None:
         v = self.volume()
+        if self.sdl:
+            self.sdl.set_music_volume(v * 0.45)
         if self.player:
             self.out.setVolume(v)
             self.music_out.setVolume(v * 0.45)
@@ -93,6 +105,9 @@ class Audio(QObject):
     def stop_voice(self, emit: bool = False) -> None:
         self._queue = []
         self._fallback.stop()
+        self._poll.stop()
+        if self.sdl:
+            self.sdl.stop_voice()
         if self.player:
             self.player.stop()
         if self._busy:
@@ -121,12 +136,25 @@ class Audio(QObject):
             return
         key = self._queue.pop(0)
         path, same_lang = self._voice_file(key)
-        if self.player and self.settings.get("voice") and path and same_lang:
+        if not (self.settings.get("voice") and path and same_lang):
+            path = None
+        if path and self.sdl and self.sdl.play_voice(path, self.volume()):
+            self._poll.start()
+        elif path and self.player:
             self.player.setSource(QUrl.fromLocalFile(str(path)))
             self.player.play()
         else:
             text = tr_voice(PHRASES.get(key, ""))
             self._fallback.start(500 + 55 * len(text))
+
+    def _poll_voice(self) -> None:
+        if not self.sdl.voice_playing():
+            self._poll.stop()
+            QTimer.singleShot(120, self._next)
+
+    def _error(self, error=None, message: str = "") -> None:
+        log.warning("audio: QMediaPlayer error %s %s", error, message)
+        self._fallback.start(300)
 
     def _status(self, status) -> None:
         if status in (QMediaPlayer.MediaStatus.EndOfMedia, QMediaPlayer.MediaStatus.InvalidMedia):
@@ -134,16 +162,27 @@ class Audio(QObject):
 
     # effects and music
     def sfx(self, name: str) -> None:
+        if self.sdl:
+            path = DATA / "sfx" / f"{name}.wav"
+            if path.exists():
+                self.sdl.play_effect(path, self.volume() * 0.8)
+            return
         e = self._effects.get(name)
         if e is not None:
             e.play()
 
     def play_music(self, name: str = "calm") -> None:
         path = DATA / "sfx" / f"{name}.ogg"
+        if self.sdl:
+            if self.settings.get("music") and path.exists():
+                self.sdl.play_music(path, self.volume() * 0.45)
+            return
         if self.music and self.settings.get("music") and path.exists():
             self.music.setSource(QUrl.fromLocalFile(str(path)))
             self.music.play()
 
     def stop_music(self) -> None:
+        if self.sdl:
+            self.sdl.stop_music()
         if self.music:
             self.music.stop()

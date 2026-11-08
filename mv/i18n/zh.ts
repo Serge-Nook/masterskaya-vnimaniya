@@ -420,6 +420,10 @@
       <translation>季洪的声音</translation>
     </message>
     <message>
+      <source>Проверить звук</source>
+      <translation>测试声音</translation>
+    </message>
+    <message>
       <source>Спокойная музыка</source>
       <translation>轻音乐</translation>
     </message>

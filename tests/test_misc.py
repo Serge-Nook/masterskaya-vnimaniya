@@ -72,3 +72,33 @@ def test_detect_language(monkeypatch):
     assert detect_language() == "ru"
     monkeypatch.setenv("LANG", "de_DE.UTF-8")
     assert detect_language() == "ru"
+
+
+def test_light_theme_overrides_dark_palette(app):
+    from PySide6.QtGui import QColor, QPalette
+
+    from mv import theme
+
+    dark = QPalette()
+    dark.setColor(QPalette.ColorRole.Window, QColor("#202020"))
+    dark.setColor(QPalette.ColorRole.WindowText, QColor("#f0f0f0"))
+    app.setPalette(dark)
+    theme.apply(app)
+    pal = app.palette()
+    assert pal.color(QPalette.ColorRole.Window).lightness() > 200
+    assert pal.color(QPalette.ColorRole.Base).lightness() > 200
+    assert pal.color(QPalette.ColorRole.WindowText).lightness() < 100
+
+
+def test_audio_falls_back_to_subtitle_timer(app, monkeypatch):
+    from mv import audio as audio_mod
+
+    monkeypatch.setenv("MV_AUDIO", "qt")
+    monkeypatch.setattr(audio_mod, "HAVE_MULTIMEDIA", False)
+    settings = {"volume": 60, "volume_cap": 70, "voice": True, "music": True}
+    a = audio_mod.Audio(type("S", (), {"get": lambda self, k: settings[k]})())
+    assert a.sdl is None and a.player is None
+    a.say("hello")
+    assert a.busy and a._fallback.isActive()
+    a.stop_voice()
+    assert not a.busy

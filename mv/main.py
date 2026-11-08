@@ -335,6 +335,7 @@ def main(argv: list[str] | None = None) -> int:
     for font in (DATA / "fonts").glob("*.ttf"):
         QFontDatabase.addApplicationFont(str(font))
     QFont.insertSubstitution("Nunito", "Noto Sans SC")
+    theme.apply(app)
     app.setStyleSheet(theme.STYLESHEET)
 
     db = Database(user_data_dir() / "data.sqlite3")

@@ -51,12 +51,16 @@ HERE="$(dirname "$(readlink -f "$0")")"
 exec "$HERE/usr/lib/masterskaya-vnimaniya/masterskaya-vnimaniya" "$@"
 RUN
 chmod +x "$APPDIR/AppRun"
-TOOL="build/appimagetool-$ARCH.AppImage"
+mkdir -p .cache && TOOL=".cache/appimagetool-$ARCH.AppImage"
 if [[ ! -x "$TOOL" ]]; then
-  curl -fsSL -o "$TOOL" "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage"
+  curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "$TOOL" "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage"
   chmod +x "$TOOL"
 fi
-APPIMAGE_EXTRACT_AND_RUN=1 ARCH="$ARCH" "$TOOL" --no-appstream "$APPDIR" "dist/Masterskaya-vnimaniya-$VERSION-$ARCH.AppImage"
+RUNTIME=".cache/runtime-$ARCH"
+if [[ ! -s "$RUNTIME" ]]; then
+  curl -fsSL --retry 5 --retry-delay 5 --retry-all-errors -o "$RUNTIME" "https://github.com/AppImage/type2-runtime/releases/download/continuous/runtime-$ARCH"
+fi
+APPIMAGE_EXTRACT_AND_RUN=1 ARCH="$ARCH" "$TOOL" --no-appstream --runtime-file "$RUNTIME" "$APPDIR" "dist/Masterskaya-vnimaniya-$VERSION-$ARCH.AppImage"
 
 # .deb
 DEBARCH=$([[ "$ARCH" == "aarch64" ]] && echo arm64 || echo amd64)

@@ -43,6 +43,7 @@ QPushButton#Primary { background: #5E8C74; color: white; border-color: #5E8C74; 
 QPushButton#Primary:focus { border: 4px solid #E0A035; }
 QPushButton#Primary:pressed { background: #4B7560; }
 QTabWidget::pane { border: 2px solid #A9CBB7; border-radius: 12px; background: #FBFAF5; }
+QTabWidget > QStackedWidget > QWidget, QScrollArea > QWidget > QWidget { background: #FBFAF5; }
 QTabBar::tab { background: #D7E8E1; padding: 12px 24px; border-top-left-radius: 12px;
   border-top-right-radius: 12px; margin-right: 4px; min-height: 40px; }
 QTabBar::tab:selected { background: #FBFAF5; font-weight: 800; }
@@ -57,3 +58,32 @@ QTableWidget { background: white; gridline-color: #D7E8E1; font-size: 18px; }
 QHeaderView::section { background: #D7E8E1; padding: 6px; border: none; font-weight: 700; font-size: 18px; }
 QScrollArea { border: none; background: transparent; }
 """
+
+
+def apply(app) -> None:
+    """Светлая тема независимо от системной (тёмные KDE/Breeze, SteamOS)."""
+    from PySide6.QtCore import Qt
+    from PySide6.QtGui import QPalette
+    from PySide6.QtWidgets import QStyleFactory
+
+    app.setStyle(QStyleFactory.create("Fusion"))
+    hints = app.styleHints()
+    if hasattr(hints, "setColorScheme"):
+        hints.setColorScheme(Qt.ColorScheme.Light)
+    pal = QPalette()
+    roles = {
+        QPalette.ColorRole.Window: BG, QPalette.ColorRole.WindowText: INK,
+        QPalette.ColorRole.Base: QColor("white"), QPalette.ColorRole.AlternateBase: BG,
+        QPalette.ColorRole.Text: INK, QPalette.ColorRole.PlaceholderText: INK_SOFT,
+        QPalette.ColorRole.Button: PANEL, QPalette.ColorRole.ButtonText: INK,
+        QPalette.ColorRole.ToolTipBase: PANEL, QPalette.ColorRole.ToolTipText: INK,
+        QPalette.ColorRole.Highlight: ACCENT, QPalette.ColorRole.HighlightedText: QColor("white"),
+        QPalette.ColorRole.Link: ACCENT, QPalette.ColorRole.BrightText: QColor("white"),
+        QPalette.ColorRole.Light: QColor("white"), QPalette.ColorRole.Midlight: BG,
+        QPalette.ColorRole.Mid: ACCENT_LIGHT, QPalette.ColorRole.Dark: INK_SOFT, QPalette.ColorRole.Shadow: INK,
+    }
+    for role, color in roles.items():
+        pal.setColor(role, color)
+    for role in (QPalette.ColorRole.WindowText, QPalette.ColorRole.Text, QPalette.ColorRole.ButtonText):
+        pal.setColor(QPalette.ColorGroup.Disabled, role, QColor("#9AA6AA"))
+    app.setPalette(pal)
